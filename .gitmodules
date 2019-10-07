@@ -85,3 +85,6 @@
 [submodule "software/local-vector-interrupts"]
 	path = software/local-vector-interrupts
 	url = https://github.com/sifive/example-local-vector-interrupts.git
+[submodule "software/example-freertos"]
+	path = software/example-freertos
+	url = git@github.com:sifive/example-freertos.git
