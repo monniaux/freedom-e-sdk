@@ -84,30 +84,30 @@ _fft:
 	slli	x12, x12, 2
 	add	x28, x9, x12
 	lw	x17, 0(x28)
-	mul	x15, x6, x17
 	slli	x29, x14, 2
+	mul	x15, x6, x17
 	add	x11, x9, x29
-	remu	x7, x15, x8
 	lw	x16, 0(x11)
+	remu	x7, x15, x8
 	add	x12, x16, x7
-	remu	x5, x12, x8
 	srli	x10, x14, 1
 	slli	x16, x10, 2
 	add	x13, x20, x16
-	sw	x5, 0(x13)
+	remu	x5, x12, x8
 	lw	x15, 0(x11)
 	sub	x29, x8, x7
+	sw	x5, 0(x13)
 	add	x10, x15, x29
-	remu	x13, x10, x8
 	add	x7, x14, x19
+	remu	x13, x10, x8
 	srli	x5, x7, 1
 	slli	x7, x5, 2
 	add	x7, x20, x7
 	sw	x13, 0(x7)
 	mul	x30, x6, x21
-	remu	x6, x30, x8
 	slli	x5, x18, 1
 	add	x14, x14, x5
+	remu	x6, x30, x8
 	j	.L101
 .L100:
 	lw	x8, 8(x2)
