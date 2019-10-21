@@ -85,9 +85,9 @@ _fft:
 	add	x28, x9, x12
 	lw	x17, 0(x28)
 	mul	x15, x6, x17
-	remu	x7, x15, x8
 	slli	x29, x14, 2
 	add	x11, x9, x29
+	remu	x7, x15, x8
 	lw	x16, 0(x11)
 	add	x12, x16, x7
 	remu	x5, x12, x8
