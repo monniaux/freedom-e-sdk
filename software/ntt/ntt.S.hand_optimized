@@ -80,8 +80,8 @@ _fft:
 	addi	x14, x0, 0
 .L101:
 	bgeu	x14, x19, .L100
-	add	x15, x14, x18
-	slli	x12, x15, 2
+	add	x12, x14, x18
+	slli	x12, x12, 2
 	add	x28, x9, x12
 	lw	x17, 0(x28)
 	mul	x15, x6, x17
