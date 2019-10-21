@@ -79,7 +79,8 @@ static void _fft(modint modulus,
     }
   }
 }
- 
+
+#if 0
 void fft(modint modulus, modint root_of_unit, modint buf[], unsigned n)
 {
   modint *out = malloc(sizeof(modint) * n);
@@ -88,6 +89,7 @@ void fft(modint modulus, modint root_of_unit, modint buf[], unsigned n)
   _fft(modulus, root_of_unit, buf, out, n, 1);
   free(out);
 }
+#endif
 
 static void negate(modint MODULUS, modint buf[restrict], unsigned n) {
   for(unsigned i=0; i<n; i++) {
@@ -127,26 +129,20 @@ int main() {
   assert(root_of_unit != 1);
   printf("root of unit = %" PRIu32 "\n", root_of_unit);
 
-  printf("malloc\n");
-  modint *buf = malloc(LENGTH * sizeof(modint)),
-    *save = malloc(LENGTH * sizeof(modint));
+  static modint buf[LENGTH], out[LENGTH], save[LENGTH];
 
   printf("randm\n");
   for(unsigned i=0; i<LENGTH; i++) {
-    //printf("rand[%d]\n", i);
-    buf[i] = randm(MODULUS);
+    save[i] = buf[i] = randm(MODULUS);
   }
   
-  printf("memcpy\n");
-  memcpy(save, buf, LENGTH * sizeof(modint));
-
   printf("start clock\n");
   clock_start();
   //printf("start fft\n");
-  fft(MODULUS, root_of_unit, buf, LENGTH);
-  //printf("start inverse fft\n");
-  fft(MODULUS, invm(root_of_unit, MODULUS), buf, LENGTH);
-  //printf("stop clock\n");
+  memcpy(out, buf, sizeof(modint) * LENGTH);
+  _fft(MODULUS, root_of_unit, buf, out, LENGTH, 1);
+  memcpy(out, buf, sizeof(modint) * LENGTH);
+  _fft(MODULUS, invm(root_of_unit, MODULUS), buf, out, LENGTH, 1);
   clock_stop();
   print_total_clock();
 
@@ -157,7 +153,7 @@ int main() {
   negate(MODULUS, buf, LENGTH);  
 #endif
   printf("compare = %d\n", memcmp(buf, save, LENGTH * sizeof(modint)));
-	 
+  
   /*
   printf("buf[0] = %" PRIu64 "\n", buf[0]);
   printf("buf[1] = %" PRIu64 "\n", buf[1]);
@@ -165,7 +161,4 @@ int main() {
   printf("buf[3] = %" PRIu64 "\n", buf[3]);
   printf("buf[4] = %" PRIu64 "\n", buf[4]);
   */
-  
-  free(buf);
-  free(save);
 }
