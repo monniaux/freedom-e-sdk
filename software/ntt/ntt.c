@@ -14,6 +14,11 @@ FFT original code from Rosetta Code.
 #include <string.h>
 #include "clock.h"
 
+#define LOG_LENGTH 8
+#define LENGTH (1 << LOG_LENGTH)
+#define MUL_MODULUS LENGTH
+#define MODULUS (MUL_MODULUS + 1)
+
 typedef uint32_t modint;
 typedef int32_t smodint;
 
@@ -80,6 +85,38 @@ static void _fft(modint modulus,
   }
 }
 
+
+static inline modint mulM(modint a, modint b) {
+  return (a * b) % MODULUS;
+}
+
+static inline modint addM(modint a, modint b) {
+  return (a + b) % MODULUS;
+}
+
+static inline modint subM(modint a, modint b) {
+  return (a + (MODULUS - b)) % MODULUS;
+}
+
+static void _fftM(modint root_of_unit,
+		  modint buf[], modint out[],
+		  unsigned n, unsigned step)
+{
+  if (step < n) {
+    modint root_of_unit2 = mulM(root_of_unit, root_of_unit);
+    _fftM(root_of_unit2, out, buf, n, step * 2);
+    _fftM(root_of_unit2, out + step, buf + step, n, step * 2);
+
+    modint exp = 1;
+    for (unsigned i = 0; i < n; i += 2 * step) {
+      modint t = mulM(exp, out[i + step]);
+      buf[i / 2]     = addM(out[i], t);
+      buf[(i + n)/2] = subM(out[i], t);
+      exp = mulM(exp, root_of_unit);
+    }
+  }
+}
+
 #if 0
 void fft(modint modulus, modint root_of_unit, modint buf[], unsigned n)
 {
@@ -91,22 +128,17 @@ void fft(modint modulus, modint root_of_unit, modint buf[], unsigned n)
 }
 #endif
 
-static void negate(modint MODULUS, modint buf[restrict], unsigned n) {
+static void negate(modint m, modint buf[restrict], unsigned n) {
   for(unsigned i=0; i<n; i++) {
-    if (buf[i]) buf[i] = MODULUS-buf[i];
+    if (buf[i]) buf[i] = m-buf[i];
   }
 }
 
-static void mulvecm(modint modulus, modint buf[restrict], unsigned n, modint coef) {
+static void mulvecm(modint m, modint buf[restrict], unsigned n, modint coef) {
   for(unsigned i=0; i<n; i++) {
-    buf[i] = mulm(buf[i], coef, modulus);
+    buf[i] = mulm(buf[i], coef, m);
   }
 }
-
-#define LOG_LENGTH 8
-#define LENGTH (1 << LOG_LENGTH)
-#define MUL_MODULUS LENGTH
-#define MODULUS (MUL_MODULUS + 1)
 
 modint randm(modint modulus) {
   static modint state = 0x42;
@@ -140,9 +172,9 @@ int main() {
   clock_start();
   //printf("start fft\n");
   memcpy(out, buf, sizeof(modint) * LENGTH);
-  _fft(MODULUS, root_of_unit, buf, out, LENGTH, 1);
+  _fftM(root_of_unit, buf, out, LENGTH, 1);
   memcpy(out, buf, sizeof(modint) * LENGTH);
-  _fft(MODULUS, invm(root_of_unit, MODULUS), buf, out, LENGTH, 1);
+  _fftM(invm(root_of_unit, MODULUS), buf, out, LENGTH, 1);
   clock_stop();
   print_total_clock();
 

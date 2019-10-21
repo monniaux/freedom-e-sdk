@@ -1,7 +1,7 @@
 PROGRAM ?= ntt
 
-MYCC=/opt/CompCert/2019-10-16/rv32/bin/ccomp
-# MYCC=$(CC) $(CFLAGS) -O2
+# MYCC=/opt/CompCert/2019-10-16/rv32/bin/ccomp
+MYCC=$(CC) $(CFLAGS) -O2
 # MYCC=/opt/CompCert/2019-10-21_sifive/bin/ccomp -frtlblock -fprepass= list
 
 $(PROGRAM): ntt.S clock.c cycles.h clock.h

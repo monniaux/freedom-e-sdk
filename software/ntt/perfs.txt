@@ -1,3 +1,2 @@
 ccomp_2019-10-16	204976
-hand_optimized4		226403
 gcc -O2			153463
