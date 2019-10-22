@@ -172,9 +172,17 @@ int main() {
   clock_start();
   //printf("start fft\n");
   memcpy(out, buf, sizeof(modint) * LENGTH);
+#if FFTM
   _fftM(root_of_unit, buf, out, LENGTH, 1);
+#else
+  _fft(MODULUS, root_of_unit, buf, out, LENGTH, 1);
+#endif
   memcpy(out, buf, sizeof(modint) * LENGTH);
+#if FFTM
   _fftM(invm(root_of_unit, MODULUS), buf, out, LENGTH, 1);
+#else
+  _fft(MODULUS, invm(root_of_unit, MODULUS), buf, out, LENGTH, 1);
+#endif
   clock_stop();
   print_total_clock();
 
