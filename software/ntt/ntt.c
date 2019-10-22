@@ -78,8 +78,9 @@ static void _fft(modint modulus,
     modint exp = 1;
     for (unsigned i = 0; i < n; i += 2 * step) {
       modint t = mulm(exp, out[i + step], modulus);
-      buf[i / 2]     = addm(out[i], t, modulus);
-      buf[(i + n)/2] = subm(out[i], t, modulus);
+      modint outi = out[i]; // DM
+      buf[i / 2]     = addm(outi, t, modulus);
+      buf[(i + n)/2] = subm(outi, t, modulus);
       exp = mulm(exp, root_of_unit, modulus);
     }
   }
