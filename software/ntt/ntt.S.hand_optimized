@@ -86,8 +86,8 @@ _fft:
 	mv	x11, x27
 	mv	x10, x19
 	call	_fft
+	jr	.L101B
 .L101:
-	bgeu	x23, x18, .L100
 	add	x30, x23, x21
 	slli	x28, x30, 2
 	add	x10, x20, x28
@@ -116,7 +116,8 @@ _fft:
 	slli	x14, x21, 1
 	sw	x16, 0(x6)
 	add	x23, x23, x14
-	j	.L101
+.L101B:
+	bltu	x23, x18, .L101
 .L100:
 	lw	x8, 8(x2)
 	lw	x9, 12(x2)
