@@ -86,7 +86,7 @@ _fft:
 	mv	x11, x27
 	mv	x10, x19
 	call	_fft
-	jr	.L101B
+	j	.L101B
 .L101:
 	add	x30, x23, x21
 	slli	x28, x30, 2
@@ -111,8 +111,8 @@ _fft:
 	remu	x9, x7, x19
 	add	x11, x23, x18
 	srli	x11, x11, 1
-	slli	x7, x11, 2
-	add	x6, x22, x7
+	slli	x11, x11, 2
+	add	x6, x22, x11
 	slli	x14, x21, 1
 	sw	x16, 0(x6)
 	add	x23, x23, x14
