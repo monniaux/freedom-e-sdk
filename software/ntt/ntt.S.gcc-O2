@@ -1,0 +1,307 @@
+	.file	"ntt.c"
+	.option nopic
+	.section	.text._fft.part.0.constprop.2,"ax",@progbits
+	.align	1
+	.type	_fft.part.0.constprop.2, @function
+_fft.part.0.constprop.2:
+	addi	sp,sp,-32
+	sw	s0,24(sp)
+	sw	s1,20(sp)
+	sw	s2,16(sp)
+	sw	s3,12(sp)
+	sw	s4,8(sp)
+	sw	ra,28(sp)
+	sw	s5,4(sp)
+	slli	s1,a3,1
+	li	a5,255
+	mv	s2,a0
+	mv	s0,a1
+	mv	s3,a2
+	slli	s4,a3,2
+	bleu	s1,a5,.L8
+.L2:
+	slli	a1,s1,2
+	add	t3,s3,s4
+	mv	a2,s3
+	li	a5,1
+	li	a7,0
+	li	t1,257
+	li	t6,255
+.L3:
+	lw	t5,0(t3)
+	mul	t4,s2,a5
+	lw	a3,0(a2)
+	srli	a6,a7,1
+	addi	a4,a7,256
+	addi	a0,a3,257
+	slli	a6,a6,2
+	srli	a4,a4,1
+	add	a6,s0,a6
+	slli	a4,a4,2
+	add	a4,s0,a4
+	mul	a5,a5,t5
+	add	a7,a7,s1
+	add	t3,t3,a1
+	add	a2,a2,a1
+	remu	a5,a5,t1
+	add	a3,a5,a3
+	remu	a3,a3,t1
+	sub	a5,a0,a5
+	remu	a5,a5,t1
+	sw	a3,0(a6)
+	sw	a5,0(a4)
+	remu	a5,t4,t1
+	bleu	a7,t6,.L3
+	lw	ra,28(sp)
+	lw	s0,24(sp)
+	lw	s1,20(sp)
+	lw	s2,16(sp)
+	lw	s3,12(sp)
+	lw	s4,8(sp)
+	lw	s5,4(sp)
+	addi	sp,sp,32
+	jr	ra
+.L8:
+	mul	s5,a0,a0
+	li	a5,257
+	mv	a2,a1
+	mv	a3,s1
+	mv	a1,s3
+	remu	s5,s5,a5
+	mv	a0,s5
+	call	_fft.part.0.constprop.2
+	mv	a3,s1
+	add	a2,s0,s4
+	add	a1,s3,s4
+	mv	a0,s5
+	call	_fft.part.0.constprop.2
+	j	.L2
+	.size	_fft.part.0.constprop.2, .-_fft.part.0.constprop.2
+	.section	.text.randm,"ax",@progbits
+	.align	1
+	.globl	randm
+	.type	randm, @function
+randm:
+	lui	a4,%hi(.LANCHOR0)
+	addi	a4,a4,%lo(.LANCHOR0)
+	lw	a3,0(a4)
+	slli	a5,a3,3
+	sub	a5,a5,a3
+	slli	a5,a5,2
+	add	a5,a5,a3
+	li	a3,8192
+	addi	a3,a3,23
+	add	a5,a5,a3
+	sw	a5,0(a4)
+	remu	a0,a5,a0
+	ret
+	.size	randm, .-randm
+	.section	.text.startup.main,"ax",@progbits
+	.align	1
+	.globl	main
+	.type	main, @function
+main:
+	lui	a0,%hi(.LC0)
+	addi	sp,sp,-48
+	li	a1,3
+	addi	a0,a0,%lo(.LC0)
+	sw	ra,44(sp)
+	sw	s0,40(sp)
+	sw	s1,36(sp)
+	sw	s2,32(sp)
+	sw	s3,28(sp)
+	sw	s4,24(sp)
+	sw	s5,20(sp)
+	sw	s6,16(sp)
+	sw	s7,12(sp)
+	call	printf
+	lui	a0,%hi(.LC1)
+	addi	a0,a0,%lo(.LC1)
+	call	puts
+	lui	a6,%hi(.LANCHOR0)
+	addi	a6,a6,%lo(.LANCHOR0)
+	lui	s5,%hi(.LANCHOR1)
+	lw	a5,0(a6)
+	addi	s1,s5,%lo(.LANCHOR1)
+	lui	s2,%hi(.LANCHOR2)
+	li	a2,8192
+	addi	a3,s2,%lo(.LANCHOR2)
+	addi	s4,s1,1024
+	addi	s3,s5,%lo(.LANCHOR1)
+	addi	s0,s5,%lo(.LANCHOR1)
+	addi	a2,a2,23
+	li	a1,257
+.L11:
+	slli	a4,a5,3
+	sub	a4,a4,a5
+	slli	a4,a4,2
+	add	a5,a4,a5
+	add	a5,a5,a2
+	remu	a4,a5,a1
+	addi	s0,s0,4
+	addi	a3,a3,4
+	sw	a4,-4(s0)
+	sw	a4,-4(a3)
+	bne	s4,s0,.L11
+	lui	a0,%hi(.LC2)
+	addi	a0,a0,%lo(.LC2)
+	sw	a5,0(a6)
+	call	puts
+	lui	s6,%hi(.LANCHOR3)
+	call	clock_start
+	addi	s7,s6,%lo(.LANCHOR3)
+	mv	a5,s3
+	addi	a4,s6,%lo(.LANCHOR3)
+.L12:
+	lw	a0,0(a5)
+	lw	a1,4(a5)
+	lw	a2,8(a5)
+	lw	a3,12(a5)
+	sw	a0,0(a4)
+	sw	a1,4(a4)
+	sw	a2,8(a4)
+	sw	a3,12(a4)
+	addi	a5,a5,16
+	addi	a4,a4,16
+	bne	a5,s4,.L12
+	li	a3,1
+	addi	a2,s6,%lo(.LANCHOR3)
+	addi	a1,s5,%lo(.LANCHOR1)
+	li	a0,3
+	call	_fft.part.0.constprop.2
+	mv	a5,s7
+.L13:
+	lw	a1,0(s3)
+	lw	a2,4(s3)
+	lw	a3,8(s3)
+	lw	a4,12(s3)
+	sw	a1,0(a5)
+	sw	a2,4(a5)
+	sw	a3,8(a5)
+	sw	a4,12(a5)
+	addi	s3,s3,16
+	addi	a5,a5,16
+	bne	s3,s4,.L13
+	li	a2,1
+	li	a0,0
+	li	a3,257
+	li	a4,3
+	li	a6,1
+	j	.L14
+.L19:
+	mv	a0,a5
+	mv	a3,a1
+.L14:
+	div	a5,a4,a3
+	mul	a5,a5,a0
+	rem	a1,a4,a3
+	sub	a5,a2,a5
+	mv	a4,a3
+	mv	a2,a0
+	bgt	a3,a6,.L19
+	bgez	a0,.L15
+	addi	a0,a0,257
+.L15:
+	slli	a5,a0,1
+	add	a5,a5,a0
+	li	a3,257
+	li	a4,1
+	remu	a5,a5,a3
+	bne	a5,a4,.L28
+	li	a3,1
+	addi	a2,s6,%lo(.LANCHOR3)
+	addi	a1,s5,%lo(.LANCHOR1)
+	call	_fft.part.0.constprop.2
+	call	clock_stop
+	call	print_total_clock
+	li	a4,257
+.L18:
+	lw	a5,0(s1)
+	beqz	a5,.L17
+	sub	a5,a4,a5
+	sw	a5,0(s1)
+.L17:
+	addi	s1,s1,4
+	bne	s1,s0,.L18
+	addi	a1,s2,%lo(.LANCHOR2)
+	li	a2,1024
+	addi	a0,s5,%lo(.LANCHOR1)
+	call	memcmp
+	mv	a1,a0
+	lui	a0,%hi(.LC5)
+	addi	a0,a0,%lo(.LC5)
+	call	printf
+	lw	ra,44(sp)
+	lw	s0,40(sp)
+	lw	s1,36(sp)
+	lw	s2,32(sp)
+	lw	s3,28(sp)
+	lw	s4,24(sp)
+	lw	s5,20(sp)
+	lw	s6,16(sp)
+	lw	s7,12(sp)
+	li	a0,0
+	addi	sp,sp,48
+	jr	ra
+.L28:
+	lui	a3,%hi(.LC3)
+	lui	a2,%hi(.LANCHOR4)
+	lui	a0,%hi(.LC4)
+	addi	a3,a3,%lo(.LC3)
+	addi	a2,a2,%lo(.LANCHOR4)
+	li	a1,36
+	addi	a0,a0,%lo(.LC4)
+	call	__assert_func
+	.size	main, .-main
+	.section	.bss.buf.3172,"aw",@nobits
+	.align	2
+	.set	.LANCHOR1,. + 0
+	.type	buf.3172, @object
+	.size	buf.3172, 1024
+buf.3172:
+	.zero	1024
+	.section	.bss.out.3173,"aw",@nobits
+	.align	2
+	.set	.LANCHOR3,. + 0
+	.type	out.3173, @object
+	.size	out.3173, 1024
+out.3173:
+	.zero	1024
+	.section	.bss.save.3174,"aw",@nobits
+	.align	2
+	.set	.LANCHOR2,. + 0
+	.type	save.3174, @object
+	.size	save.3174, 1024
+save.3174:
+	.zero	1024
+	.section	.rodata.main.str1.4,"aMS",@progbits,1
+	.align	2
+.LC0:
+	.string	"root of unit = %lu\n"
+.LC1:
+	.string	"randm"
+	.zero	2
+.LC2:
+	.string	"start clock"
+.LC3:
+	.string	"(x1 * a0) % b0 == 1"
+.LC4:
+	.string	"ntt.c"
+	.zero	2
+.LC5:
+	.string	"compare = %d\n"
+	.section	.sdata.__func__.3073,"a",@progbits
+	.align	2
+	.set	.LANCHOR4,. + 0
+	.type	__func__.3073, @object
+	.size	__func__.3073, 5
+__func__.3073:
+	.string	"invm"
+	.section	.sdata.state.3167,"aw",@progbits
+	.align	2
+	.set	.LANCHOR0,. + 0
+	.type	state.3167, @object
+	.size	state.3167, 4
+state.3167:
+	.word	66
+	.ident	"GCC: (GNU) 7.2.0"
