@@ -1,0 +1,67 @@
+* from gcc -O2
+
+** doubling the sw and lw on entry and exit
+time cycles: from 150815 to 159874
+
+** remu	a5,t4,t1
+
+*** replacing a single remu by a sequence
+	remu	a5,t4,t1
+	remu	a5,t4,t1
+	remu	a5,t4,t1
+	remu	a5,t4,t1
+	remu	a5,t4,t1
+time cycles: from 159874 to 226029
+
+from original: from 150815 to 213778
+
+*** sequence of 4 remu
+	remu	a5,t4,t1
+	remu	a5,t4,t1
+	remu	a5,t4,t1
+	remu	a5,t4,t1
+
+199839
+
+*** sequence of 3 remu
+183511
+
+*** sequence of 2 remu
+167158
+
+*** sequence of 1 remu
+150815
+
+*** split sequence of 2 remu
+	remu	a0,t4,t1
+	sw	a5,0(a4)
+	remu	a5,t4,t1
+165112
+
+*** split sequence of 2 remu
+	remu	a5,a5,t1 (above)
+	remu	a0,t4,t1
+	sw	a3,0(a6)
+	sw	a5,0(a4)
+	remu	a5,t4,t1
+
+time cycles: 165282
+
+* from hand optimized
+	remu	x16, x6, x19
+	remu	x9, x9, x19
+	add	x11, x23, x18
+->
+	remu	x16, x6, x19
+	add	x11, x23, x18
+	remu	x9, x9, x19
+
+202804 -> 201370
+
+->
+	remu	x16, x6, x19
+	add	x11, x23, x18
+	srli	x11, x11, 1
+	remu	x9, x9, x19
+202075
+because of looping back to beginning and wait at mul?

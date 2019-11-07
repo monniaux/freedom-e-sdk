@@ -65,7 +65,7 @@ static inline modint powm(modint a, smodint exponent, modint m) {
   else /* exponent < 0 */ return powm(invm(a, m), -exponent, m);
 }
 
-static void _fft(modint modulus,
+void _fft(modint modulus,
 		 modint root_of_unit,
 		 modint buf[], modint out[],
 		 unsigned n, unsigned step)
@@ -170,13 +170,14 @@ int main() {
   }
   
   printf("start clock\n");
-  clock_start();
   //printf("start fft\n");
   memcpy(out, buf, sizeof(modint) * LENGTH);
 #if FFTM
   _fftM(root_of_unit, buf, out, LENGTH, 1);
 #else
+  clock_start();
   _fft(MODULUS, root_of_unit, buf, out, LENGTH, 1);
+  clock_stop();
 #endif
   memcpy(out, buf, sizeof(modint) * LENGTH);
 #if FFTM
@@ -184,7 +185,6 @@ int main() {
 #else
   _fft(MODULUS, invm(root_of_unit, MODULUS), buf, out, LENGTH, 1);
 #endif
-  clock_stop();
   print_total_clock();
 
 #if 0
