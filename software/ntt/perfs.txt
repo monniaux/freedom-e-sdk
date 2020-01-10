@@ -1,2 +1,16 @@
-ccomp_2019-10-16	204976
-gcc -O2			153463
+* Before switch test position
+gcc(noipa)	80545
+ccomp		97741
+
+* After
+ccomp 84317
+gcc(noipa) -O2 79872
+gcc(noipa) -O1 79611
+
+* Hand adjustments on ccomp
+83933
+
+* Moving root_of_unit2 into test:
+from time cycles: 84317
+to time cycles: 86123
+which is counterintuitive!!!

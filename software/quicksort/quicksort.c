@@ -1,6 +1,33 @@
 #include "quicksort.h"
 
+#ifdef __GNUC__
+#define NOIPA __attribute__((noipa))
+#else
+#define NOIPA
+#endif
+
 /* Rosetta Code */
+#if 1
+void NOIPA quicksort(data *A, int len) {
+  data pivot = A[len / 2];
+ 
+  int i, j;
+  for (i = 0, j = len - 1; ; i++, j--) {
+    while (A[i] < pivot) i++;
+    while (A[j] > pivot) j--;
+ 
+    if (i >= j) break;
+ 
+    data temp = A[i];
+    A[i]     = A[j];
+    A[j]     = temp;
+  }
+ 
+  if (i >= 2) { quicksort(A, i); }
+  if (len-i >= 2) { quicksort(A + i, len - i); }
+}
+
+#else
 void quicksort(data *A, int len) {
   if (len < 2) return;
  
@@ -21,6 +48,7 @@ void quicksort(data *A, int len) {
   quicksort(A, i);
   quicksort(A + i, len - i);
 }
+#endif
 
 data data_random(void) {
   static uint64_t next = 1325997111;

@@ -14,6 +14,12 @@ FFT original code from Rosetta Code.
 #include <string.h>
 #include "clock.h"
 
+#ifdef __GNUC__
+#define NOIPA __attribute__((noipa))
+#else
+#define NOIPA
+#endif
+
 #define LOG_LENGTH 8
 #define LENGTH (1 << LOG_LENGTH)
 #define MUL_MODULUS LENGTH
@@ -65,7 +71,30 @@ static inline modint powm(modint a, smodint exponent, modint m) {
   else /* exponent < 0 */ return powm(invm(a, m), -exponent, m);
 }
 
-void _fft(modint modulus,
+#if 1
+NOIPA void _fft(modint modulus,
+		 modint root_of_unit,
+		 modint buf[], modint out[],
+		 unsigned n, unsigned step)
+{
+  if (step * 2 < n) {
+    modint root_of_unit2 = mulm(root_of_unit, root_of_unit, modulus);
+    _fft(modulus, root_of_unit2, out, buf, n, step * 2);
+    _fft(modulus, root_of_unit2, out + step, buf + step, n, step * 2);
+  }
+  
+  modint exp = 1;
+  for (unsigned i = 0; i < n; i += 2 * step) {
+    modint t = mulm(exp, out[i + step], modulus);
+    modint outi = out[i]; // DM
+    buf[i / 2]     = addm(outi, t, modulus);
+    buf[(i + n)/2] = subm(outi, t, modulus);
+    exp = mulm(exp, root_of_unit, modulus);
+  }
+}
+
+#else
+NOIPA void _fft(modint modulus,
 		 modint root_of_unit,
 		 modint buf[], modint out[],
 		 unsigned n, unsigned step)
@@ -85,6 +114,7 @@ void _fft(modint modulus,
     }
   }
 }
+#endif
 
 
 static inline modint mulM(modint a, modint b) {
@@ -99,7 +129,7 @@ static inline modint subM(modint a, modint b) {
   return (a + (MODULUS - b)) % MODULUS;
 }
 
-static void _fftM(modint root_of_unit,
+NOIPA static void _fftM(modint root_of_unit,
 		  modint buf[], modint out[],
 		  unsigned n, unsigned step)
 {
