@@ -1,0 +1,36 @@
+* data=uin64_t
+** int
+*** appels récursifs normaux
+**** ccomp
+85073
+
+**** gcc-O2
+59646
+
+*** test appels récursifs dans l'appelant
+**** ccomp
+77582
+
+**** gcc-O2
+60301
+
+** unsigned
+*** test appels récursifs dans l'appelant
+**** ccomp
+79506
+
+*** récursion terminale codée comme un saut
+**** ccomp
+72840
+
+**** gcc-O2
+62736
+* data=uint32_t
+** unsigned
+*** récursion terminale codée comme un saut
+**** gcc-O2
+48027
+**** ccomp
+55760
+*** éviter un saut intermédiaire en rentrant le +1, compenser
+52909

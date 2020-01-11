@@ -8,10 +8,37 @@
 
 /* Rosetta Code */
 #if 1
-void NOIPA quicksort(data *A, int len) {
+void NOIPA quicksort(data *A, INDEX len) {
+  data pivot;
+  INDEX i,j ;
+
+start:
+  pivot = A[len / 2];
+ 
+  for (i = 0, j = len - 1; ; i++, j--) {
+    while (A[i] < pivot) i++;
+    while (A[j] > pivot) j--;
+ 
+    if (i >= j) break;
+ 
+    data temp = A[i];
+    A[i]     = A[j];
+    A[j]     = temp;
+  }
+ 
+  if (i >= 2) { quicksort(A, i); }
+  if (len-i >= 2) {
+    A = A + i;
+    len = len - i;
+    goto start;
+  }
+}
+
+#elif
+void NOIPA quicksort(data *A, INDEX len) {
   data pivot = A[len / 2];
  
-  int i, j;
+  INDEX i, j;
   for (i = 0, j = len - 1; ; i++, j--) {
     while (A[i] < pivot) i++;
     while (A[j] > pivot) j--;
@@ -28,12 +55,12 @@ void NOIPA quicksort(data *A, int len) {
 }
 
 #else
-void quicksort(data *A, int len) {
+void quicksort(data *A, INDEX len) {
   if (len < 2) return;
  
   data pivot = A[len / 2];
  
-  int i, j;
+  INDEX i, j;
   for (i = 0, j = len - 1; ; i++, j--) {
     while (A[i] < pivot) i++;
     while (A[j] > pivot) j--;
