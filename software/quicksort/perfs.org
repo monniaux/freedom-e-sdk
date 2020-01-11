@@ -30,7 +30,10 @@
 *** récursion terminale codée comme un saut
 **** gcc-O2
 48027
+48015
+
 **** ccomp
 55760
 *** éviter un saut intermédiaire en rentrant le +1, compenser
 52909
+53578

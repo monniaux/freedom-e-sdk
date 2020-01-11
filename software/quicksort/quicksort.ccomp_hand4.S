@@ -22,8 +22,6 @@ quicksort:
 	addi	x18, x0, 0
 	addi	x6, x8, -1
 	addi	x10, x9, 0
-	slli	x5, x6, 2
-	add	x16, x9, x5
 .L101B:
 .L101:
 	lw	x30, 0(x10)
@@ -31,17 +29,22 @@ quicksort:
 	addi	x18, x18, 1
 	bltu	x30, x15, .L101
 	addi	x18, x18, -1
+	addi	x10, x10, -4
+	slli	x5, x6, 2
+	add	x16, x9, x5
 .L102:
 	lw	x5, 0(x16)
 	addi	x16, x16, -4
 	addi	x6, x6, -1
 	bltu	x15, x5, .L102
 	addi	x6, x6, 1
+	addi	x16, x16, 4
 .L103:
 	bgeu	x18, x6, .L104
-	sw	x5, -4(x10)
-	sw	x30, 4(x16)
+	sw	x5, 0(x10)
+	sw	x30, 0(x16)
 	addi	x18, x18, 1
+	addi	x10, x10, 4
 	addi	x6, x6, -1
 	j	.L101B
 .L104:
